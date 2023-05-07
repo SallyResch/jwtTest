@@ -15,6 +15,9 @@ import java.io.IOException;
 @RequiredArgsConstructor //Will create an args constructur for every private final- field
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -22,5 +25,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
+        final String authHeader = request.getHeader("Authorization"); //bearer token
+        final String jwtToken;
+        final String userEmail;
+        if(authHeader ==null || !authHeader.startsWith("Bearer ")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+        //extrakt token from header
+        jwtToken = authHeader.substring(7);
+        userEmail =jwtService.extractUsername(jwtToken);
     }
 }
