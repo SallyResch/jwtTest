@@ -20,12 +20,13 @@ import java.util.List;
 @Table(name="_user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.AUTO)
     private Long id;
     private String firstname;
     private String lastname;
     private String email;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
