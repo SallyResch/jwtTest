@@ -17,12 +17,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component //Instead of Service or Repository annotation
-@RequiredArgsConstructor //Will create an args constructur for every private final- field
+@RequiredArgsConstructor //Will create an args constructur for every private finalfield
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -31,10 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
+        if (request.getServletPath().contains("/api/v1/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         final String authHeader = request.getHeader("Authorization"); //bearer token
         final String jwtToken;
         final String userEmail;
-        if(authHeader ==null || !authHeader.startsWith("Bearer ")){
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
