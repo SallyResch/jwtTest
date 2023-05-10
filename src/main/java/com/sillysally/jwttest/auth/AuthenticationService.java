@@ -50,4 +50,7 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
+    public AuthenticationResponse loadUserByEmail() {
+    }
 }
