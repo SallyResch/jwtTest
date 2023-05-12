@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -49,5 +52,37 @@ public class AuthenticationService {
                 .builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public void deleteUser(String email) {
+        repository.deleteByEmail(email);
+    }
+
+    public UserResponse updateUser(String email, UpdateRequest request) {
+        var user = repository.findByEmail(email)
+                .orElseThrow();
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        var updatedUser = repository.save(user);
+        return UserResponse.builder()
+                .firstname(updatedUser.getFirstname())
+                .lastname(updatedUser.getLastname())
+                .email(updatedUser.getEmail())
+                .build();
+    }
+
+    public List<UserResponse> getUsers() {
+        List<User> users = repository.findAll();
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User user : users) {
+            UserResponse userResponse = UserResponse.builder()
+                    .firstname(user.getFirstname())
+                    .lastname(user.getLastname())
+                    .email(user.getEmail())
+                    .build();
+            userResponses.add(userResponse);
+        }
+
+        return userResponses;
     }
 }
