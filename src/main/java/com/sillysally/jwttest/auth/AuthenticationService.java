@@ -1,7 +1,6 @@
 package com.sillysally.jwttest.auth;
 
 import com.sillysally.jwttest.config.JwtService;
-import com.sillysally.jwttest.user.Role;
 import com.sillysally.jwttest.user.User;
 import com.sillysally.jwttest.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,14 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
-        repository.save(user);
+        var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
+        var fullName = savedUser.getFirstname() + " " + savedUser.getLastname();
+        var email = savedUser.getEmail();
+        System.out.println("New user registered: " + fullName + ", " + email);
+
         return AuthenticationResponse
                 .builder()
                 .token(jwtToken)
@@ -84,5 +88,19 @@ public class AuthenticationService {
         }
 
         return userResponses;
+    }
+
+    public UserResponse getUserInfo(String email) {
+        Optional<User> profile = repository.findByEmail(email);
+        if (profile.isPresent()) {
+            User user = profile.get();
+            UserResponse userResponse = UserResponse.builder()
+                    .firstname(user.getFirstname())
+                    .lastname(user.getLastname())
+                    .email(user.getEmail())
+                    .build();
+            return userResponse;
+        }
+        return null;
     }
 }

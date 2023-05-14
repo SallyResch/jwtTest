@@ -52,4 +52,11 @@ public class AuthenticationController {
         List<UserResponse> users = service.getUsers();
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/getUserInfo")
+    public ResponseEntity<UserResponse> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
+        UserResponse userResponse = service.getUserInfo(userDetails.getUsername());
+        return ResponseEntity.ok(userResponse);
+    }
+
 }
