@@ -7,11 +7,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: 635166546A576D5A7134743777217A25432A462D4A614E645267556B58703272
+      expiration: 6000 #86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
 
 
