@@ -8,16 +8,13 @@ import org.springframework.web.servlet.config.annotation.*;
 @EnableWebMvc
 public class ViewConfiguration implements WebMvcConfigurer {
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**") // Specify the endpoint pattern to allow CORS
-                        .allowedOrigins("http://localhost:3000") // Specify the allowed origin(s)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE"); // Specify the allowed HTTP method(s)
-            }
-        };
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/v1/auth/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 
     @Override

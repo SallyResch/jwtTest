@@ -28,4 +28,5 @@ public class UserController {
     public String delete() {
         return "DELETE:: user controller";
     }
+
 }

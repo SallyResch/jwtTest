@@ -10,6 +10,7 @@ import com.sillysally.jwttest.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -117,9 +118,6 @@ public class AuthenticationService {
             }
         }
     }
-    public void deleteUser(String email) {
-        repository.deleteByEmail(email);
-    }
 
     public UserResponse updateUser(String email, UpdateRequest request) {
         var user = repository.findByEmail(email)
@@ -163,5 +161,13 @@ public class AuthenticationService {
             return userResponse;
         }
         return null; // return null or throw an exception if the user does not exist
+    }
+
+    public void deleteUserByEmail(String email) {
+        Optional<User> optionalUser = repository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            repository.delete(user);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.sillysally.jwttest.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,23 +41,6 @@ public class AuthenticationController {
         service.refreshToken(request, response);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteUser(
-            @AuthenticationPrincipal UserDetails userDetails
-    ){
-        service.deleteUser(userDetails.getUsername());
-        System.out.println("User is deleted");
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<UserResponse> updateUser(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UpdateRequest request
-    ){
-        UserResponse userResponse = service.updateUser(userDetails.getUsername(), request);
-        return ResponseEntity.ok(userResponse);
-    }
 
     @GetMapping("/getUsersCredentials")
     public ResponseEntity<List<UserResponse>> getUsers() {
@@ -70,4 +54,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<String> deleteUserByEmail(@RequestParam String email) {
+        try {
+            service.deleteUserByEmail(email);
+            return ResponseEntity.ok().body("User with email " + email + " was deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not delete user with email " + email + ": " + e.getMessage());
+        }
+    }
 }
