@@ -1,6 +1,5 @@
 package com.sillysally.jwttest.auth;
 
-import com.sillysally.jwttest.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class UpdateRequest {
     private String firstname;
     private String lastname;
-    private String email;
-    private String password;
-    private Role role;
 }
